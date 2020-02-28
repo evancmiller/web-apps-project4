@@ -120,7 +120,7 @@ tr.even{
     color: #c5c6c7 !important;
 }
 
-select{
+select, input.login{
     background-color: #141a21;
     border-color: #1f2833;
     border-style: solid;
@@ -130,8 +130,18 @@ select{
     margin: 8px 0;
 }
 
-select.kbb{
+#planSelect{
     width: 90%;
+    padding: 2px 12px;
+    margin: 0px;
+}
+
+input.login{
+    width: 100%
+}
+
+input:focus, select:focus{
+    outline: none;
 }
 
 input[type="search"]{
@@ -144,7 +154,7 @@ input[type="search"]{
     margin: 8px 0;
 }
 
-input[type="submit"]{
+input[type="submit"], input[type="button"]{
     border: 3px solid #0b0c10;
     border-radius: 10px;
     background-color: #1f2833;
@@ -156,13 +166,9 @@ input[type="submit"]{
     min-width: 100px;
 }
 
-input[type="submit"]:hover{
+input[type="submit"]:hover, input[type="button"]:hover{
     background-color: #364659;
     cursor: pointer;
-}
-
-select:focus{
-    outline: none;
 }
 
 label{
