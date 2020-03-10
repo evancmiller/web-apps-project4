@@ -8,6 +8,4 @@
     
     $query->close();
     $db->close();
-
-    
 ?>

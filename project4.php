@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <?php
     session_start();
-    if(!IsSet($userId)){
+    if(!isset($_SESSION["userId"])){
         header("Location: http://judah.cedarville.edu/~miller/TermProject/login.php");
     }
 ?>

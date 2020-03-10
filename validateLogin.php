@@ -7,17 +7,16 @@
     $query->execute();
     $query->bind_result($userId, $user, $pass);
 
-    if($query->num_rows === 0){
-        $query->close();
-        $db->close();
-        echo false;
-    }
-    else{
-        $query->fetch();
-        session_register("userId");
+    if($query->fetch()){
+        $_SESSION["userId"] = $userId;
         $query->close();
         $db->close();
         header("Location: http://judah.cedarville.edu/~miller/TermProject/project4.php");
         echo true;
+    }
+    else{
+        $query->close();
+        $db->close();
+        echo false;
     }
 ?>

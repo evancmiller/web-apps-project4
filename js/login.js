@@ -26,6 +26,10 @@ function validateLogin(){
             if(!data){
                 userInput.classList.add("error");
                 passInput.classList.add("error");
+                alert("Incorrect username or password");
+            }
+            else{
+                window.location.href = "http://judah.cedarville.edu/~miller/TermProject/project4.php";
             }
         });
     }
