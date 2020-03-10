@@ -1,4 +1,8 @@
 <!DOCTYPE HTML>
+<?php
+    session_start();
+    session_unset();
+?>
 <html lang="en">
     <head>
         <title>CS3220 - Alec Mathisen & Evan Miller Project 4 Login</title>
@@ -24,9 +28,9 @@
                 <div class="row">
                     <div class="col-12 section">
                         <label for="username">Username</label><br>
-                        <input type="text" class="login" name="username" id="username" value="" onchange="usernameChange()"><br>
+                        <input type="text" class="login" name="username" id="username" value="" onchange="this.classList.remove('error');"><br>
                         <label for="password">Password</label><br>
-                        <input type="password" class="login" name="password" id="password" value="" onchange="passwordChange()">
+                        <input type="password" class="login" name="password" id="password" value="" onchange="this.classList.remove('error');">
                     </div>
                 </div>
                 <div class="row">

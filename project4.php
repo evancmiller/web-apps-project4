@@ -1,4 +1,10 @@
 <!DOCTYPE HTML>
+<?php
+    session_start();
+    if(!IsSet($userId)){
+        header("Location: http://judah.cedarville.edu/~miller/TermProject/login.php");
+    }
+?>
 <html lang="en">
     <head>
         <title>CS3220 - Alec Mathisen & Evan Miller Project 4</title>
