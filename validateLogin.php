@@ -2,16 +2,16 @@
     session_start();
     $db = mysqli_connect("james", "cs3220", "", "cs3220_Sp20");
 
-    $query = $db->prepare("SELECT * FROM ae_User WHERE username = ? AND password = ?");
-    $query->bind_param("ss", $_POST["user"], $_POST["pass"]);
+    $query = $db->prepare("SELECT * FROM ae_User WHERE username = ?");
+    $query->bind_param("s", $_POST["user"]);
     $query->execute();
     $query->bind_result($userId, $user, $pass);
 
-    if($query->fetch()){
+    if($query->fetch() && password_verify($_POST["pass"], $pass)){
         $_SESSION["userId"] = $userId;
+        $_SESSION["user"] = $user;
         $query->close();
         $db->close();
-        header("Location: http://judah.cedarville.edu/~miller/TermProject/project4.php");
         echo true;
     }
     else{

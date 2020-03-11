@@ -179,3 +179,8 @@ label{
 .error{
     box-shadow: 0 0 3px 0 red inset;
 }
+
+#calculator {
+    display: flex;
+    flex-direction: row;
+}

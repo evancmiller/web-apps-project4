@@ -1,12 +1,11 @@
 class Plan{
-    constructor(planName, major, studentName, year, term){
+    constructor(planName, major, studentName, year){
         this.planName = planName;
-        this.currentYear = year;
-        this.currentTerm = term;
         this.years = [];
         this.major = major;
         this.studentName = studentName;
         this.courses = [];
+        this.catalogYear = year;
     }
 }
 
@@ -88,6 +87,7 @@ function hasYear(yearName){
 
 function updatePlan(){
     var html = "";
+    let totalCredits = 0;
 
     // Generate a row for each year
     for (year of plan.years){
@@ -99,17 +99,14 @@ function updatePlan(){
             if(semester.name !== "Fall"){
                 yearName++;
             }
-            html += "<div class='section semester";
-            if(yearName == plan.currentYear && semester.name == plan.currentTerm){
-                html += " current";
-            }
-            html += "'><div class='row'>" + 
+            html += "<div class='section semester'><div class='row'>" + 
                     "<div class='col-6 no-padding'><h4>" + semester.name + " " +
                     yearName + "</h4></div>" + 
                     "<div class='col-6 align-right no-padding'>Credits: " +
                     getCredits(semester) + "</div></div><hr>" +
                     "<div class='dropArea' id='" + semester.name + yearName +
                     "' ondrop='drop(event)' ondragover='allowDrop(event)'>";
+            totalCredits += getCredits(semester);
 
             // List the courses for each semester
             for (course of semester.courses){
@@ -122,6 +119,9 @@ function updatePlan(){
         html += "</div>";
     }
     $("#plan").html(html);
+    $("#major").html("Major: " + plan.major);
+    $("#catalogYear").html("Catalog Year: " + plan.catalogYear);
+    $("#catalogHours").html("Catalog Hours: " + totalCredits);
 }
 
 function generateAccordion(){
@@ -138,29 +138,41 @@ function generateAccordion(){
     });
 }
 
-var plan = null;
+function getCombined(planId){
+    if($.fn.DataTable.isDataTable("#catalog")){
+        datatable.destroy();
+    }
+    $("#catalog").html("<thead><tr><th>ID</th><th>Name</th><th>Description</th><th>Credits</th></tr></thead><tbody id='catalogBody'></tbody>");
+    datatable = $("#catalog").DataTable();
 
-$("#catalog").DataTable();
-$.getJSON("/~gallaghd/cs3220/termProject/getCombined.php", function(data){
-    plan = new Plan(data.plan.name, data.plan.major, data.plan.student, data.plan.currYear, data.plan.currTerm);
-    // Add courses to catalog
-    $.each(data.catalog.courses, function(idx, val){
-        $("#catalog").DataTable().row.add([val.id, val.name, val.description, val.credits]).draw(false);
-        plan.courses.push(new Course(val.name, val.id, val.description, val.credits));
+    $.getJSON("/~miller/TermProject/getCombined.php", {id: planId}, function(data){
+        plan = new Plan(data.plan.name, data.plan.major, data.plan.student, data.plan.catYear);
+        // Add courses to catalog
+        $.each(data.catalog.courses, function(idx, val){
+            $("#catalog").DataTable().row.add([val.id, val.name, val.description, val.credits]).draw(false);
+            plan.courses.push(new Course(val.name, val.id, val.description, val.credits));
+        });
+        // Add years, semesters, and courses to plan
+        $.each(data.plan.courses, function(idx, val){
+            let year = val.year;
+            if(!val.term.includes("Fall")){
+                year -= 1;
+            }
+            if(!hasYear(year)){
+                plan.years.push(new Year(year));
+            }
+            let semester = getSemester(val.term, year);
+            let course = getCourseById(val.id);
+            semester.courses.push(course);
+        });
+        updatePlan();
+        generateAccordion();
     });
-    // Add years, semesters, and courses to plan
-    $.each(data.plan.courses, function(idx, val){
-        let year = val.year;
-        if(!val.term.includes("Fall")){
-            year -= 1;
-        }
-        if(!hasYear(year)){
-            plan.years.push(new Year(year));
-        }
-        let semester = getSemester(val.term, year);
-        let course = getCourseById(val.id);
-        semester.courses.push(course);
-    });
-    updatePlan();
-    generateAccordion();
-});
+}
+
+var plan = null;
+var datatable = null;
+
+if($("#planSelect").children().length != 0){
+    getCombined($("#planSelect > option").val());
+}

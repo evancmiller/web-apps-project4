@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <?php
     session_start();
+
     if(!isset($_SESSION["userId"])){
         header("Location: http://judah.cedarville.edu/~miller/TermProject/login.php");
     }
@@ -18,13 +19,44 @@
     </head>
     <body>
         <div class="row">
-            <div class="col-8">
+            <div class="col-5">
                 <h1>Academic Planning</h1>
             </div>
-            <div class="col-3">
+            <div class="col-2">
+                <div class="row">
+                    Name: <?php print $_SESSION["user"] ?>
+                </div>
+                <div class="row" id="major">
+                    Major:
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="row" id="catalogYear">
+                    Catalog Year:
+                </div>
+                <div class="row" id="catalogHours">
+                    Catalog Hours:
+                </div>
+            </div>
+            <div class="col-2">
                 <label for="plan">Plan</label><br>
-                <select name="plan" id="planSelect" value="" onchange="planChange()">
-                    <option value=""></option>
+                <select name="plan" id="planSelect" value="" onchange="getCombined(this.value)">
+                    <?php
+                        $db = mysqli_connect("james", "cs3220", "", "cs3220_Sp20");
+
+                        // Retrieve the user's plans from the database
+                        $query = $db->prepare("SELECT id, name FROM ae_Plan WHERE user_id = ?");
+                        $query->bind_param("i", $_SESSION["userId"]);
+                        $query->execute();
+                        $query->bind_result($planId, $planName);
+                    
+                        // List the user's plans
+                        while($query->fetch()){
+                            print "<option value='$planId'>$planName</option>";
+                        }
+                        $query->close();
+                        $db->close();
+                    ?>
                 </select>
             </div>
             <div class="col-1">
@@ -56,6 +88,17 @@
             <div class="col-3">
                 <div class="row">
                     <!-- Lower left -->
+                    <div id="calculator">
+                        <label for="calc_equation">Equation:</label>
+                        <br>
+                        <input type="text" id="calc_equation">
+                        <br>
+                        <label for="calc_result">Result:</label>
+                        <br>
+                        <input type="text" id="calc_result" readonly>
+                        <br>
+                        <input type="button" id="calc_submit" value="Calculate">
+                    </div>
                 </div>
                 <div class="row">
                     <a href="../cs3220.html">
@@ -72,17 +115,6 @@
             </div>
             <div class="col-9">
                 <table id="catalog" class="display compact">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Credits</th>
-                        </tr>
-                    </thead>
-                    <tbody id="catalogBody">
-                        <!-- Catalog populates here -->
-                    </tbody>
                 </table>
             </div>
         </div>
