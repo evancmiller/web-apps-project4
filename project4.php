@@ -97,7 +97,14 @@
                         <br>
                         <input type="text" id="calc_result" readonly>
                         <br>
-                        <input type="button" id="calc_submit" value="Calculate">
+                        <input type="button" id="calc_submit" value="Calculate" onclick="calculate();">
+
+			<script>
+			function calculate(){
+			   var string = document.getElementById("calc_equation").value;
+			   document.getElementById("calc_result").value = eval(string)
+			}
+			</script>
                     </div>
                 </div>
                 <div class="row">
