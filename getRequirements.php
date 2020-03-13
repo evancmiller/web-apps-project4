@@ -7,9 +7,9 @@
         }
 
         public function addCategory($category){
-	    if($this->categories[$category] == null){
+	        if($this->categories[$category] == null){
             	$this->categories[$category] = new Category();
-	    }
+	        }
         }
     }
 
@@ -21,7 +21,7 @@
         }
 
         public function addCourse($course){
-	    array_push($this->courses, $course);
+            $this->courses[$course] = $course;
         }
     }
 
@@ -49,7 +49,7 @@
 	INNER JOIN ae_Category c ON c.id = cc.category_id
 	INNER JOIN ae_Course co ON co.id = cc.course_id
 	WHERE c.id = r.category_id
-	AND r.catalog_id =?");
+	AND r.catalog_id = ?");
     $query->bind_param("i", $catalogId);
     $query->execute();
     $query->bind_result($categoryName, $desig);

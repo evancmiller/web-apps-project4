@@ -124,8 +124,12 @@ function updatePlan(){
     $("#catalogHours").html("Catalog Hours: " + totalCredits);
 }
 
-function generateAccordion(){
-    $.getJSON("/~gallaghd/cs3220/termProject/getRequirements.php", function(data){
+function generateAccordion(planId){
+    $.getJSON("/~miller/TermProject/getRequirements.php", {id: planId}, function(data){
+        if($("#accordion").accordion("instance") !== undefined){
+            $("#accordion").accordion("destroy");
+        }
+        $("#accordion").empty();
         $.each(data.categories, function(idx, val){
             let html = "<h3>" + idx + "</h3><div>";
             $.each(val.courses, function(idx, val){
@@ -166,7 +170,7 @@ function getCombined(planId){
             semester.courses.push(course);
         });
         updatePlan();
-        generateAccordion();
+        generateAccordion(planId);
     });
 }
 
