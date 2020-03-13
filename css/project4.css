@@ -182,5 +182,5 @@ label{
 
 #calculator {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
